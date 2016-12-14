@@ -9,14 +9,16 @@ import {
  View
 } from 'react-native';
 
-import {authUser, addAlert} from '../actions';
+import {loginUser, signupUser, addAlert} from '../actions';
 
 var Login = React.createClass({
   onSignIn: function() {
-    var {email, password} = this.props.fields;
-    this.props.dispatch(authUser('fake id'));
-    this.props.dispatch(addAlert('hello'));
-    // console.log(email.value, password.value);
+    var {dispatch, fields: {email, password}} = this.props;
+    dispatch(loginUser(email.value, password.value));
+  },
+  onSignUp: function() {
+    var {dispatch, fields: {email, password}} = this.props;
+    dispatch(signupUser(email.value, password.value));
   },
   render() {
     var {fields: {email, password}} = this.props;
@@ -55,11 +57,13 @@ var Login = React.createClass({
             </View>
         </View>
         <View style={styles.buttonContainer}>
-            <TouchableOpacity>
-              <Text style={styles.button} onPress={this.onSignIn}>Sign In</Text>
+            <TouchableOpacity onPress={this.onSignIn}>
+              <Text style={styles.button}>Sign In</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.button}>Sign Up</Text>
+            <TouchableOpacity onPress={this.onSignUp}>
+              <Text style={styles.button}>
+                Sign Up
+              </Text>
             </TouchableOpacity>
         </View>
       </View>

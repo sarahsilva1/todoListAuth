@@ -1,24 +1,42 @@
 import React from 'react';
 import {reduxForm} from 'redux-form';
-
 import {
- StyleSheet,
- Text,
- TextInput,
- TouchableOpacity,
- View
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity
 } from 'react-native';
 
 import {loginUser, signupUser, addAlert} from '../actions';
 
 var Login = React.createClass({
+  getInitialState: function() {
+    return {
+      loading: false
+    }
+  },
   onSignIn: function() {
     var {dispatch, fields: {email, password}} = this.props;
-    dispatch(loginUser(email.value, password.value));
+    this.setState({
+      loading: true
+    });
+    dispatch(loginUser(email.value, password.value)).then(() => {
+      this.setState({
+        loading: false
+      });
+    });
   },
   onSignUp: function() {
     var {dispatch, fields: {email, password}} = this.props;
-    dispatch(signupUser(email.value, password.value));
+    this.setState({
+      loading: true
+    });
+    dispatch(signupUser(email.value, password.value)).then(() => {
+      this.setState({
+        loading: false
+      });
+    });
   },
   render() {
     var {fields: {email, password}} = this.props;
@@ -31,43 +49,56 @@ var Login = React.createClass({
       }
     }
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            To-Do
+    if (this.state.loading) {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text>
+            Loading...
           </Text>
         </View>
-        <View style={styles.field}>
-          <TextInput
-            {...email}
-            placeholder="Email"
-            style={styles.textInput}/>
-          <View>
-            {renderError(email)}
+      )
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              To-Do
+            </Text>
           </View>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            {...password}
-            placeholder="Password"
-            style={styles.textInput}/>
+          <View style={styles.field}>
+            <TextInput
+              {...email}
+              placeholder="Email"
+              style={styles.textInput}/>
             <View>
-              {renderError(password)}
+              {renderError(email)}
             </View>
-        </View>
-        <View style={styles.buttonContainer}>
+          </View>
+          <View style={styles.field}>
+            <TextInput
+              {...password}
+              placeholder="Password"
+              style={styles.textInput}/>
+            <View>
+            {renderError(password)}
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={this.onSignIn}>
-              <Text style={styles.button}>Sign In</Text>
+              <Text style={styles.button}>
+                Sign In
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onSignUp}>
               <Text style={styles.button}>
                 Sign Up
               </Text>
             </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    );
+      );
+    }
+
   }
 });
 
@@ -77,18 +108,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 20,
-    backgroundColor: '#aaa'
+    backgroundColor: '#2ecc71'
   },
   titleContainer: {
     padding: 10
   },
   title: {
     color: 'white',
-    fontSize: 35
+    fontSize: 35,
+    marginTop: 20,
+    marginBottom: 20
   },
   field: {
-    color: 'white',
-    padding: 5,
     borderRadius: 5,
     padding: 5,
     paddingLeft: 8,

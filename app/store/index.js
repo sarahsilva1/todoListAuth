@@ -2,7 +2,7 @@ import {createStore} from 'redux';
 import reducer from '../reducer';
 
 var defaultState = {
-  todos: []
+  // todos: []
 };
 
 exports.configureStore = (initialState=defaultState) => {

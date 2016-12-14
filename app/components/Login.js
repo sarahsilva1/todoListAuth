@@ -1,7 +1,6 @@
 import React from 'react';
 import {reduxForm} from 'redux-form';
-// import {connect} from 'react-redux';
-// import { reducer as formReducer } from 'redux-form'
+
 import {
  StyleSheet,
  Text,
@@ -10,18 +9,26 @@ import {
  View
 } from 'react-native';
 
+import {authUser, addAlert} from '../actions';
+
 var Login = React.createClass({
-  getInitialState: function() {
-    return {
-      loading: false
-    }
-  },
   onSignIn: function() {
     var {email, password} = this.props.fields;
-    console.log(email.value, password.value);
+    this.props.dispatch(authUser('fake id'));
+    this.props.dispatch(addAlert('hello'));
+    // console.log(email.value, password.value);
   },
   render() {
     var {fields: {email, password}} = this.props;
+
+    var renderError = (field) => {
+      if (field.touched && field.error) {
+        return (
+          <Text style={styles.formError}>{field.error}</Text>
+        )
+      }
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
@@ -34,12 +41,18 @@ var Login = React.createClass({
             {...email}
             placeholder="Email"
             style={styles.textInput}/>
+          <View>
+            {renderError(email)}
+          </View>
         </View>
         <View style={styles.field}>
           <TextInput
             {...password}
             placeholder="Password"
             style={styles.textInput}/>
+            <View>
+              {renderError(password)}
+            </View>
         </View>
         <View style={styles.buttonContainer}>
             <TouchableOpacity>
@@ -91,11 +104,20 @@ const styles = StyleSheet.create({
   button: {
     fontSize: 30,
     color: 'white'
+  },
+  formError: {
+    color: 'red'
   }
 });
 
 var validate = (formProps) => {
   var errors = {};
+  if (!formProps.email) {
+    errors.email = "Please enter an email.";
+  }
+  if (!formProps.password) {
+    errors.password = "Please enter a password.";
+  }
   return errors;
 }
 

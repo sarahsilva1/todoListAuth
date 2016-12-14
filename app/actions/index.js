@@ -1,6 +1,2 @@
-// exports.addTodo = (text) => {
-//   return {
-//     type: 'ADD_TODO',
-//     text
-//   }
-// }
+ export * from './authActions';
+ export * from './alertsActions';
